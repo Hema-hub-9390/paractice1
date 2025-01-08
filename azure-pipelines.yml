@@ -1,0 +1,29 @@
+# Maven
+# Build your Java project and run tests with Apache Maven.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/java
+
+trigger:
+- master
+
+pool:
+  vmImage: ubuntu-latest
+
+steps:
+ 
+- task: Gradle@3
+  inputs:
+    gradleWrapperFile: 'gradlew'
+    tasks: 'build'
+    publishJUnitResults: true
+    testResultsFiles: '**/TEST-*.xml'
+    javaHomeOption: 'JDKVersion'
+    sonarQubeRunAnalysis: false
+    spotBugsAnalysis: false
+   - task: Gradle@3
+  displayName: 'gradlew build'
+  inputs:
+- task: CopyPublishBuildArtifacts@1
+  inputs:
+    ArtifactName: 'gradle'
+    workingDirectory: '$(Build.SourcesDirectory)/TestPath'
